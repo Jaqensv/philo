@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 11:53:00 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/06/19 19:05:53 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/07/10 13:05:51 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,15 @@
 
 void    *routine(void *arg) // Lorsque le thread arrive à la fin de cette fonction, il aura terminé toutes ses tâches.
 {
-	//pthread_t	test;
+	t_phl	*current_philo;
 
-	(void)arg;
+	current_philo = (t_phl *)arg;
+
+	pthread_mutex_lock(&current_philo->phl_link->mutex);
+	print_routine(current_philo);
+	gettimeofday(&time, NULL);
+	pthread_mutex_unlock(&current_philo->phl_link->mutex);
+	pthread_detach(current_philo->philo_life);
 	return (NULL);
 }
 
@@ -31,7 +37,7 @@ void	parser(char **argv, t_table *data_table)
 	data_table->time_to_eat = ft_atoi(argv[3]);
 	data_table->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
-		printf("test\n");
+		data_table->times_philo_must_eat = ft_atoi(argv[5]);
 }
 
 void	param_checker(int argc, char **argv)
@@ -70,14 +76,18 @@ int	main(int argc, char **argv)
 	param_checker(argc, argv);
 	parser(argv, &data_table);
 	data_table.philos = malloc(sizeof(t_phl) * data_table.philo_nb);
+	pthread_mutex_init(&data_table.mutex, NULL);
 	while (i < data_table.philo_nb)
 	{
-		pthread_create(&data_table.philos[i]->philo_life, NULL, routine, &data_table);
+		data_table.philos[i].philo_id = i + 1;
+		data_table.philos[i].phl_link = &data_table;
+		pthread_create(&data_table.philos[i].philo_life, NULL, &routine, &data_table.philos[i]);
 		i++;
-		data_table.philos[i]->philo_id = i;
 	}
+	while (1) // tant qu'aucun philo n'est mort
+		usleep(50);
+	pthread_mutex_destroy(&data_table.mutex);
 	// pthread_join(philo1, NULL);
-	// pthread_join(philo2, NULL);
-
+	//system("leaks philo");
 	return (0);
 }

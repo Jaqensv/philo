@@ -2,6 +2,7 @@ NAME = philo
 
 SOURCES = philo.c \
 		print.c \
+		print_error.c \
 		utils.c
 
 OBJECTS = $(SOURCES:.c=.o)

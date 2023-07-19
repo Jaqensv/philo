@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 16:57:33 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/06/14 16:58:30 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/07/10 13:06:17 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,3 +36,7 @@ long long int	ft_atoi(const char *str)
 	}
 	return (n * booleen);
 }
+
+fonction time
+
+struct timeval	time;
