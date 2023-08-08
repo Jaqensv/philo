@@ -14,6 +14,10 @@
 
 void    print_routine(t_phl *current_philo)
 {
+    //long int    time;
+
+    // time = get_time();
+    // printf("[%ld] ", time);
     printf("%d", current_philo->philo_id);
     printf(" ");
     printf("has taken a fork");

@@ -30,13 +30,14 @@ long long int	ft_atoi(const char *str)
 		i++;
 	}
 	while (str[i] >= '0' && str[i] <= '9')
-	{
-		n = n * 10 + (str[i] - '0');
-		i++;
-	}
+		n = n * 10 + (str[i++] - '0');
 	return (n * booleen);
 }
 
-fonction time
+long int	get_time(void)
+{
+	struct timeval	actual_time;
 
-struct timeval	time;
+	gettimeofday(&actual_time, NULL);	
+	return ((actual_time.tv_sec * 1000) + (actual_time.tv_usec / 1000));
+}

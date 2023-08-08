@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
+# include <stdbool.h>
 
 # include <stdio.h>
 
@@ -31,14 +32,15 @@ typedef struct s_table
 	int				times_philo_must_eat;
 	t_phl			*philos;
 	pthread_mutex_t	mutex;
-}			t_table;
+}					t_table;
 
 typedef struct s_phl
 {
 	t_table			*phl_link;
+	int				*forks_tab;
 	int				philo_id;
 	pthread_t		philo_life;
-}			t_phl;
+}					t_phl;
 
 void			wrong_param_nb(void);
 void			wrong_param_alpha(void);
@@ -46,6 +48,8 @@ void			wrong_param_negative(void);
 void			wrong_param_space(void);
 void			wrong_param_pnb(void);
 void			print_routine(t_phl *current_philo);
+void			forks_trade(t_phl current_philo);
+long int		get_time(void);
 long long int	ft_atoi(const char *str);
 
 #endif

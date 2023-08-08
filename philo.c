@@ -12,17 +12,17 @@
 
 #include "philo.h"
 
-// int pthread_create (pthread_t * thread, pthread_attr_t * attr, void * (* start_routine) (void *), void * arg);
-
 void    *routine(void *arg) // Lorsque le thread arrive à la fin de cette fonction, il aura terminé toutes ses tâches.
 {
-	t_phl	*current_philo;
+	t_phl		*current_philo;
 
 	current_philo = (t_phl *)arg;
-
+	current_philo->forks_tab = malloc(sizeof(int) * current_philo->phl_link->philo_nb);
+	forks_trade(*current_philo);
 	pthread_mutex_lock(&current_philo->phl_link->mutex);
-	print_routine(current_philo);
-	gettimeofday(&time, NULL);
+	printf("id : %d fork : %d\n", current_philo->philo_id, current_philo->forks_tab[current_philo->philo_id - 1]);
+	printf("%d gauche <-> droite %d\n", current_philo->forks_tab[current_philo->philo_id - 2], current_philo->forks_tab[current_philo->philo_id]);
+	//print_routine(current_philo);
 	pthread_mutex_unlock(&current_philo->phl_link->mutex);
 	pthread_detach(current_philo->philo_life);
 	return (NULL);
@@ -85,9 +85,9 @@ int	main(int argc, char **argv)
 		i++;
 	}
 	while (1) // tant qu'aucun philo n'est mort
-		usleep(50);
+		usleep((int)get_time / 10);
 	pthread_mutex_destroy(&data_table.mutex);
 	// pthread_join(philo1, NULL);
-	//system("leaks philo");
+	// system("leaks philo");
 	return (0);
 }
