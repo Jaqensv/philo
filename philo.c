@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 11:53:00 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/07/10 13:05:51 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/11 14:27:00 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,10 @@ void    *routine(void *arg) // Lorsque le thread arrive à la fin de cette fonct
 
 	current_philo = (t_phl *)arg;
 	current_philo->forks_tab = malloc(sizeof(int) * current_philo->phl_link->philo_nb);
-	forks_trade(*current_philo);
-	pthread_mutex_lock(&current_philo->phl_link->mutex);
-	printf("id : %d fork : %d\n", current_philo->philo_id, current_philo->forks_tab[current_philo->philo_id - 1]);
-	printf("%d gauche <-> droite %d\n", current_philo->forks_tab[current_philo->philo_id - 2], current_philo->forks_tab[current_philo->philo_id]);
-	//print_routine(current_philo);
-	pthread_mutex_unlock(&current_philo->phl_link->mutex);
-	pthread_detach(current_philo->philo_life);
+	//pthread_mutex_lock(&current_philo->phl_link->mutex);
+	print_routine(current_philo);
+	//pthread_mutex_unlock(&current_philo->phl_link->mutex);
+	//pthread_detach(current_philo->philo_life);
 	return (NULL);
 }
 
@@ -77,6 +74,7 @@ int	main(int argc, char **argv)
 	parser(argv, &data_table);
 	data_table.philos = malloc(sizeof(t_phl) * data_table.philo_nb);
 	pthread_mutex_init(&data_table.mutex, NULL);
+	data_table.start_time = get_time();
 	while (i < data_table.philo_nb)
 	{
 		data_table.philos[i].philo_id = i + 1;
@@ -84,10 +82,14 @@ int	main(int argc, char **argv)
 		pthread_create(&data_table.philos[i].philo_life, NULL, &routine, &data_table.philos[i]);
 		i++;
 	}
-	while (1) // tant qu'aucun philo n'est mort
-		usleep((int)get_time / 10);
+	// while (1) // tant qu'aucun philo n'est mort
+	// 	my_usleep((int)get_time);
 	pthread_mutex_destroy(&data_table.mutex);
 	// pthread_join(philo1, NULL);
 	// system("leaks philo");
 	return (0);
 }
+
+
+// compteur nbr de repas mangés par philo
+// time quand philo a commencé à manger pour la derniere fois

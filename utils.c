@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 16:57:33 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/07/10 13:06:17 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/11 10:52:39 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,15 @@ long int	get_time(void)
 {
 	struct timeval	actual_time;
 
-	gettimeofday(&actual_time, NULL);	
+	gettimeofday(&actual_time, NULL);
 	return ((actual_time.tv_sec * 1000) + (actual_time.tv_usec / 1000));
+}
+
+void	my_usleep(long int time_in_ms)
+{
+	long int	start_time;
+
+	start_time = get_time();
+	while ((get_time() - start_time) < time_in_ms)
+		usleep(time_in_ms / 10);
 }

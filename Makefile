@@ -3,7 +3,6 @@ NAME = philo
 SOURCES = philo.c \
 		print.c \
 		print_error.c \
-		forks_trade.c \
 		utils.c
 
 OBJECTS = $(SOURCES:.c=.o)
