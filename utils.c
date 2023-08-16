@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 16:57:33 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/11 10:52:39 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/16 20:48:49 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,19 @@ long int	get_time(void)
 	return ((actual_time.tv_sec * 1000) + (actual_time.tv_usec / 1000));
 }
 
+long int	exe_time(t_phl *current_philo)
+{
+	long int	exe_time;
+
+	exe_time = get_time() - current_philo->phl_link->start_time;
+	return (exe_time);
+}	
+
 void	my_usleep(long int time_in_ms)
 {
 	long int	start_time;
 
 	start_time = get_time();
 	while ((get_time() - start_time) < time_in_ms)
-		usleep(time_in_ms / 10);
+		usleep(500);
 }

@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 11:53:00 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/11 14:27:00 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/17 00:07:19 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,8 @@ void    *routine(void *arg) // Lorsque le thread arrive à la fin de cette fonct
 	t_phl		*current_philo;
 
 	current_philo = (t_phl *)arg;
-	current_philo->forks_tab = malloc(sizeof(int) * current_philo->phl_link->philo_nb);
-	//pthread_mutex_lock(&current_philo->phl_link->mutex);
 	print_routine(current_philo);
-	//pthread_mutex_unlock(&current_philo->phl_link->mutex);
-	//pthread_detach(current_philo->philo_life);
+	//pthread_detach(current_philo->philo_life); // peut causer du data race
 	return (NULL);
 }
 
@@ -35,6 +32,7 @@ void	parser(char **argv, t_table *data_table)
 	data_table->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
 		data_table->times_philo_must_eat = ft_atoi(argv[5]);
+	data_table->start_time = get_time();
 }
 
 void	param_checker(int argc, char **argv)
@@ -64,10 +62,11 @@ void	param_checker(int argc, char **argv)
 	}
 }
 
-void	mutex_init(t_table data_table)
+void	mutex_init(t_table *data_table)
 {
-	pthread_mutex_init(&data_table.philos->left_fork, NULL);
-	pthread_mutex_init(&data_table.philos->right_fork, NULL);
+	//pthread_mutex_init(data_table.philos->left_fork, NULL);
+	//pthread_mutex_init(data_table.philos->right_fork, NULL);
+	pthread_mutex_init(&data_table->mutex, NULL);
 }
 
 int	main(int argc, char **argv)
@@ -79,8 +78,8 @@ int	main(int argc, char **argv)
 	param_checker(argc, argv);
 	parser(argv, &data_table);
 	data_table.philos = malloc(sizeof(t_phl) * data_table.philo_nb);
-	mutex_init(data_table);
-	data_table.start_time = get_time();
+	//data_table.forks_tab = malloc(sizeof(pthread_mutex_t) * data_table.philo_nb);
+	//mutex_init(&data_table);
 	while (i < data_table.philo_nb)
 	{
 		data_table.philos[i].philo_id = i + 1;
@@ -88,10 +87,10 @@ int	main(int argc, char **argv)
 		pthread_create(&data_table.philos[i].philo_life, NULL, &routine, &data_table.philos[i]);
 		i++;
 	}
-	// while (1) // tant qu'aucun philo n'est mort
-	// 	my_usleep((int)get_time);
-	//pthread_mutex_destroy(&data_table.mutex);
-	// pthread_join(philo1, NULL);
+	while (check_death(&data_table) == 0)
+		my_usleep(100);
+	// pthread_mutex_destroy(&data_table.mutex);
+	// pthread_join(, NULL);
 	// system("leaks philo");
 	return (0);
 }

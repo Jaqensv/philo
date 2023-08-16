@@ -10,7 +10,7 @@ BONUS = $(SRC_BONUS:.c=.o)
 
 CC = gcc $(CFLAGS)
 
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -g -fsanitize=address
 
 $(NAME): $(OBJECTS)
 
