@@ -64,6 +64,12 @@ void	param_checker(int argc, char **argv)
 	}
 }
 
+void	mutex_init(t_table data_table)
+{
+	pthread_mutex_init(&data_table.philos->left_fork, NULL);
+	pthread_mutex_init(&data_table.philos->right_fork, NULL);
+}
+
 int	main(int argc, char **argv)
 {
 	t_table		data_table;
@@ -73,7 +79,7 @@ int	main(int argc, char **argv)
 	param_checker(argc, argv);
 	parser(argv, &data_table);
 	data_table.philos = malloc(sizeof(t_phl) * data_table.philo_nb);
-	pthread_mutex_init(&data_table.mutex, NULL);
+	mutex_init(data_table);
 	data_table.start_time = get_time();
 	while (i < data_table.philo_nb)
 	{
@@ -84,7 +90,7 @@ int	main(int argc, char **argv)
 	}
 	// while (1) // tant qu'aucun philo n'est mort
 	// 	my_usleep((int)get_time);
-	pthread_mutex_destroy(&data_table.mutex);
+	//pthread_mutex_destroy(&data_table.mutex);
 	// pthread_join(philo1, NULL);
 	// system("leaks philo");
 	return (0);

@@ -1,7 +1,7 @@
 NAME = philo
 
 SOURCES = philo.c \
-		print.c \
+		status.c \
 		print_error.c \
 		utils.c
 

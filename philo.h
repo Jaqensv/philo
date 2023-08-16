@@ -30,12 +30,15 @@ typedef struct s_table
 {
 	int				philo_nb;
 	long int		start_time;
-	time_t			time_to_die;
-	time_t			time_to_eat;
-	time_t			time_to_sleep;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
 	int				times_philo_must_eat;
 	t_phl			*philos;
-	pthread_mutex_t	mutex;
+	pthread_mutex_t	print;
+	pthread_mutex_t	stop;
+	pthread_mutex_t	eat;
+	pthread_mutex_t	dead;
 }					t_table;
 
 typedef struct s_phl
@@ -43,6 +46,7 @@ typedef struct s_phl
 	t_table			*phl_link;
 	int				*forks_tab;
 	int				philo_id;
+	int				last_meal;
 	pthread_mutex_t	left_fork;
 	pthread_mutex_t	right_fork;
 	pthread_t		philo_life;
@@ -55,7 +59,7 @@ void			wrong_param_space(void);
 void			wrong_param_pnb(void);
 void			print_routine(t_phl *current_philo);
 void			my_usleep(long int time_in_ms);
-void			print(t_phl *current_philo, char *str);
+int				print(t_phl *current_philo, char *str);
 long int		get_time(void);
 long long int	ft_atoi(const char *str);
 
