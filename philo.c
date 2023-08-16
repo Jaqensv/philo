@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 11:53:00 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/17 00:07:19 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/17 00:20:03 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,14 +77,14 @@ int	main(int argc, char **argv)
 	i = 0;
 	param_checker(argc, argv);
 	parser(argv, &data_table);
-	data_table.philos = malloc(sizeof(t_phl) * data_table.philo_nb);
+	data_table.phl_link = malloc(sizeof(t_phl) * data_table.philo_nb);
 	//data_table.forks_tab = malloc(sizeof(pthread_mutex_t) * data_table.philo_nb);
 	//mutex_init(&data_table);
 	while (i < data_table.philo_nb)
 	{
-		data_table.philos[i].philo_id = i + 1;
-		data_table.philos[i].phl_link = &data_table;
-		pthread_create(&data_table.philos[i].philo_life, NULL, &routine, &data_table.philos[i]);
+		data_table.phl_link[i].philo_id = i + 1;
+		data_table.phl_link[i].table_link = &data_table;
+		pthread_create(&data_table.phl_link[i].philo_life, NULL, &routine, &data_table.phl_link[i]);
 		i++;
 	}
 	while (check_death(&data_table) == 0)
