@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 11:53:00 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/17 00:20:03 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/17 18:03:31 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void    *routine(void *arg) // Lorsque le thread arrive à la fin de cette fonct
 	t_phl		*current_philo;
 
 	current_philo = (t_phl *)arg;
+	while (current_philo->table_link->start_time == -1)
+		;
 	print_routine(current_philo);
 	//pthread_detach(current_philo->philo_life); // peut causer du data race
 	return (NULL);
@@ -80,6 +82,7 @@ int	main(int argc, char **argv)
 	data_table.phl_link = malloc(sizeof(t_phl) * data_table.philo_nb);
 	//data_table.forks_tab = malloc(sizeof(pthread_mutex_t) * data_table.philo_nb);
 	//mutex_init(&data_table);
+	data_table.start_time = -1;
 	while (i < data_table.philo_nb)
 	{
 		data_table.phl_link[i].philo_id = i + 1;
@@ -87,8 +90,7 @@ int	main(int argc, char **argv)
 		pthread_create(&data_table.phl_link[i].philo_life, NULL, &routine, &data_table.phl_link[i]);
 		i++;
 	}
-	while (check_death(&data_table) == 0)
-		my_usleep(100);
+	supervisor(&data_table);
 	// pthread_mutex_destroy(&data_table.mutex);
 	// pthread_join(, NULL);
 	// system("leaks philo");

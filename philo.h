@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 16:49:15 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/17 01:11:18 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/17 17:37:18 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void			wrong_param_pnb(void);
 void			print_routine(t_phl *current_philo);
 void			my_usleep(long int time_in_ms);
 void			print(t_phl *current_philo, char *str);
-int				check_death(t_table *data_table);
+int				supervisor(t_table *data_table);
 long int		get_time(void);
 long int		exe_time(t_table *table_data);
 long long int	ft_atoi(const char *str);
