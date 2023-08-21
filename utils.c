@@ -42,13 +42,13 @@ long int	get_time(void)
 	return ((actual_time.tv_sec * 1000) + (actual_time.tv_usec / 1000));
 }
 
-long int	exe_time(t_table *table_data)
+long int	exe_time(t_table *table)
 {
 	long int	exe_time;
 
-	exe_time = get_time() - table_data->start_time;
+	exe_time = get_time() - table->start_time;
 	return (exe_time);
-}	
+}
 
 void	my_usleep(long int time_in_ms)
 {
