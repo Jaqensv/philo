@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 16:49:15 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/22 20:19:49 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/22 21:45:35 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ typedef struct s_table
 	pthread_mutex_t	*forks_tab;
 	pthread_mutex_t	death_mutex;
 	pthread_mutex_t	get_time_mutex;
-	
 }					t_table;
 
 typedef struct s_phl
@@ -58,7 +57,8 @@ void			my_usleep(long int time_in_ms);
 void			print(t_phl *philo, char *str);
 void			print_error(char *str);
 void			*supervisor(void *arg);
-void    		*routine(void *arg);
+void			*routine(void *arg);
+void			free_for_all(t_table *table);
 int				check_death(t_table *table);
 int				check_food(t_table *table);
 long int		get_time(void);

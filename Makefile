@@ -3,7 +3,7 @@ NAME = philo
 SOURCES = philo.c \
 		routine.c \
 		utils.c \
-		utils2.c
+		print.c
 
 
 OBJECTS = $(SOURCES:.c=.o)

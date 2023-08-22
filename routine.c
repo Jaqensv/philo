@@ -6,26 +6,30 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 19:32:04 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/22 21:03:53 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/22 21:28:58 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*supervisor(void *arg)
-{	
-	t_table	*table;
+void	*routine(void *arg)
+{
+	t_phl		*philo;
 
-	table = (t_table *)arg;
+	philo = (t_phl *)arg;
+	if (philo->philo_id % 2 == 0)
+		my_usleep(2);
 	while (1)
 	{
-		if (check_death(table) == 1 || (table->times_philo_must_eat > 0 && check_food(table) == 1))
+		pthread_mutex_lock(&philo->table_link->death_mutex);
+		if (philo->table_link->death == 1
+			|| philo->table_link->meal_nbr_reached == 1)
 		{
-			pthread_mutex_lock(&table->death_mutex);
-			table->death = 1;
-			pthread_mutex_unlock(&table->death_mutex);
-			break;
+			pthread_mutex_unlock(&philo->table_link->death_mutex);
+			break ;
 		}
+		pthread_mutex_unlock(&philo->table_link->death_mutex);
+		print_routine(philo);
 	}
 	return (NULL);
 }
@@ -55,6 +59,25 @@ void	print_routine(t_phl *philo)
 	print(philo, "is sleeping");
 	my_usleep(philo->table_link->time_to_sleep);
 	print(philo, "is thinking");
+}
+
+void	*supervisor(void *arg)
+{	
+	t_table	*table;
+
+	table = (t_table *)arg;
+	while (1)
+	{
+		if (check_death(table) == 1
+			|| (table->times_philo_must_eat > 0 && check_food(table) == 1))
+		{
+			pthread_mutex_lock(&table->death_mutex);
+			table->death = 1;
+			pthread_mutex_unlock(&table->death_mutex);
+			break ;
+		}
+	}
+	return (NULL);
 }
 
 int	check_death(t_table *table)
