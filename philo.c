@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 11:53:00 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/22 21:45:47 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/22 22:06:14 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ void	mutex_init(t_table *table)
 	{
 		pthread_mutex_init(&table->forks_tab[i], NULL);
 		pthread_mutex_init(&table->phl_link[i].death_time_mutex, NULL);
-		pthread_mutex_init(&table->death_mutex, NULL);
 		pthread_mutex_init(&table->phl_link[i].meal_mutex, NULL);
 	}
+	pthread_mutex_init(&table->death_mutex, NULL);
 }
 
 int	main(int argc, char **argv)
