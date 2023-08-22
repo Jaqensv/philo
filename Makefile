@@ -1,16 +1,17 @@
 NAME = philo
 
 SOURCES = philo.c \
-		status.c \
-		print_error.c \
-		utils.c
+		routine.c \
+		utils.c \
+		utils2.c
+
 
 OBJECTS = $(SOURCES:.c=.o)
 BONUS = $(SRC_BONUS:.c=.o)
 
 CC = gcc $(CFLAGS)
 
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=thread -pthread
 
 $(NAME): $(OBJECTS)
 

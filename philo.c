@@ -6,23 +6,30 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 11:53:00 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/17 18:03:31 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/22 21:08:17 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void    *routine(void *arg) // Lorsque le thread arrive à la fin de cette fonction, il aura terminé toutes ses tâches.
+void    *routine(void *arg)
 {
-	t_phl		*current_philo;
+	t_phl		*philo;
 
-	current_philo = (t_phl *)arg;
-	while (current_philo->table_link->start_time == -1)
-		;
-	//pthread_mutex_lock(&current_philo->last_meal_mutex);
-	//pthread_mutex_unlock(&current_philo->last_meal_mutex);
-	print_routine(current_philo);
-	//pthread_detach(current_philo->philo_life); // peut causer du data race
+	philo = (t_phl *)arg;
+	if (philo->philo_id % 2 == 0)
+		my_usleep(2);
+	while (1)
+	{
+		pthread_mutex_lock(&philo->table_link->death_mutex);
+		if (philo->table_link->death == 1 || philo->table_link->meal_nbr_reached == 1)
+		{
+			pthread_mutex_unlock(&philo->table_link->death_mutex);
+			break;
+		}
+		pthread_mutex_unlock(&philo->table_link->death_mutex);
+		print_routine(philo);
+	}
 	return (NULL);
 }
 
@@ -30,13 +37,12 @@ void	parser(char **argv, t_table *table)
 {
 	table->philo_nb = ft_atoi(argv[1]);
 	if (table->philo_nb < 1)
-		wrong_param_pnb();
+		print_error("We need at least one philosopher");
 	table->time_to_die = ft_atoi(argv[2]);
 	table->time_to_eat = ft_atoi(argv[3]);
 	table->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
 		table->times_philo_must_eat = ft_atoi(argv[5]);
-	table->start_time = get_time();
 }
 
 void	param_checker(int argc, char **argv)
@@ -47,18 +53,18 @@ void	param_checker(int argc, char **argv)
 	i = 0;
 	j = 1;
 	if (argc < 5 || argc > 6)
-		wrong_param_nb();
+		print_error("wrong_param_nb");
 	while (argv[j])
 	{
 		while (argv[j][i])
 		{
 			if ((argv[j][i] >= 'a' && argv[j][i] <= 'z')
 				|| (argv[j][i] >= 'A' && argv[j][i] <= 'Z'))
-				wrong_param_alpha();
+				print_error("Wrong param (alpha)");
 			if (argv[j][i] == '-')
-				wrong_param_negative();
+				print_error("Wrong param (negative)");
 			if (argv[j][i] == ' ')
-				wrong_param_space();
+				print_error("Wrong param (space)");
 			i++;
 		}
 		j++;
@@ -66,11 +72,18 @@ void	param_checker(int argc, char **argv)
 	}
 }
 
-void	mutex_init(t_phl phl_link)
+void	mutex_init(t_table *table)
 {
-	pthread_mutex_init(&phl_link.last_meal_mutex, NULL);
+	int	i;
 
-
+	i = -1;
+	while (++i < table->philo_nb)
+	{
+		pthread_mutex_init(&table->forks_tab[i], NULL);
+		pthread_mutex_init(&table->phl_link[i].death_time_mutex, NULL);
+		pthread_mutex_init(&table->death_mutex, NULL);
+		pthread_mutex_init(&table->phl_link[i].meal_mutex, NULL);
+	}
 }
 
 int	main(int argc, char **argv)
@@ -78,31 +91,29 @@ int	main(int argc, char **argv)
 	t_table		table;
 	int			i;
 
-	i = 0;
+	i = -1;
 	param_checker(argc, argv);
 	parser(argv, &table);
 	table.phl_link = malloc(sizeof(t_phl) * table.philo_nb);
-	//table.forks_tab = malloc(sizeof(pthread_mutex_t) * table.philo_nb);
-	table.start_time = -1;
-	while (i < table.philo_nb)
+	table.forks_tab = malloc(sizeof(pthread_mutex_t) * table.philo_nb);
+	mutex_init(&table);
+	table.start_time = get_time();
+	table.death = 0;
+	table.meal_nbr_reached = 0;
+	table.times_they_all_ate = 0;
+	while (++i < table.philo_nb)
 	{
+		table.phl_link[i].meal_nbr = 0;
 		table.phl_link[i].philo_id = i + 1;
 		table.phl_link[i].table_link = &table;
-		//pthread_mutex_init(&table.phl_link[i].last_meal_mutex, NULL);
-		//pthread_mutex_init(&table.phl_link[i].left_fork, NULL);
-		//pthread_mutex_init(&table.phl_link[i].right_fork, NULL);
-		//mutex_init(table.phl_link[i]);
-		table.phl_link[i].meal_nbr = 0;
-		pthread_create(&table.phl_link[i].philo_life, NULL, &routine, &table.phl_link[i]);
-		i++;
+		table.phl_link[i].death_time = get_time() + table.time_to_die;
+	 	pthread_create(&table.phl_link[i].philo_life, NULL, &routine, &table.phl_link[i]);
 	}
-	supervisor(&table);
+	pthread_create(&table.supervisor, NULL, &supervisor, &table);
+	i = -1;
+	while (++i < table.philo_nb)
+		pthread_join(table.phl_link[i].philo_life, NULL);
+	pthread_join(table.supervisor, NULL);
 	//pthread_mutex_destroy(&table.phl_link->last_meal_mutex);
-	//pthread_join(, NULL);
-	//system("leaks philo");
 	return (0);
 }
-
-
-// compteur nbr de repas mangés par philo
-// time quand philo a commencé à manger pour la derniere fois
