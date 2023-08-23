@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 16:49:15 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/22 21:45:35 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/22 23:00:29 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,13 @@ typedef struct s_table
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				times_philo_must_eat;
-	int				times_they_all_ate;
 	int				death;
-	int				meal_nbr_reached;
 	pthread_t		supervisor;
 	t_phl			*phl_link;
+	int				phl_end;
 	pthread_mutex_t	*forks_tab;
 	pthread_mutex_t	death_mutex;
-	pthread_mutex_t	get_time_mutex;
+	pthread_mutex_t	phl_end_mutex;
 }					t_table;
 
 typedef struct s_phl
@@ -47,7 +46,6 @@ typedef struct s_phl
 	long int		death_time;
 	int				meal_nbr;
 	pthread_mutex_t	death_time_mutex;
-	pthread_mutex_t	last_meal_mutex;
 	pthread_mutex_t	meal_mutex;
 	pthread_t		philo_life;
 }					t_phl;
@@ -61,6 +59,7 @@ void			*routine(void *arg);
 void			free_for_all(t_table *table);
 int				check_death(t_table *table);
 int				check_food(t_table *table);
+int				stop(t_table *table);
 long int		get_time(void);
 long int		exe_time(t_table *table);
 long long int	ft_atoi(const char *str);

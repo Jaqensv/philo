@@ -11,7 +11,7 @@ BONUS = $(SRC_BONUS:.c=.o)
 
 CC = gcc $(CFLAGS)
 
-CFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=thread -pthread
+CFLAGS = -Wall -Werror -Wextra
 
 $(NAME): $(OBJECTS)
 

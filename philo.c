@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 11:53:00 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/22 22:06:14 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/23 14:09:28 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,19 +51,14 @@ void	param_checker(int argc, char **argv)
 	}
 }
 
-void	variable_init(t_table *table)
-{
-	table->start_time = get_time();
-	table->death = 0;
-	table->meal_nbr_reached = 0;
-	table->times_they_all_ate = 0;
-}
-
-void	mutex_init(t_table *table)
+void	global_init(t_table *table)
 {
 	int	i;
 
 	i = -1;
+	table->start_time = get_time();
+	table->death = 0;
+	table->phl_end = 0;
 	while (++i < table->philo_nb)
 	{
 		pthread_mutex_init(&table->forks_tab[i], NULL);
@@ -71,6 +66,19 @@ void	mutex_init(t_table *table)
 		pthread_mutex_init(&table->phl_link[i].meal_mutex, NULL);
 	}
 	pthread_mutex_init(&table->death_mutex, NULL);
+	pthread_mutex_init(&table->phl_end_mutex, NULL);
+}
+
+int	stop(t_table *table)
+{
+	pthread_mutex_lock(&table->death_mutex);
+	if (table->death == 1)
+	{
+		pthread_mutex_unlock(&table->death_mutex);
+		return (1);
+	}
+	pthread_mutex_unlock(&table->death_mutex);
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -83,8 +91,7 @@ int	main(int argc, char **argv)
 	parser(argv, &table);
 	table.phl_link = malloc(sizeof(t_phl) * table.philo_nb);
 	table.forks_tab = malloc(sizeof(pthread_mutex_t) * table.philo_nb);
-	variable_init(&table);
-	mutex_init(&table);
+	global_init(&table);
 	while (++i < table.philo_nb)
 	{
 		table.phl_link[i].meal_nbr = 0;
@@ -96,6 +103,16 @@ int	main(int argc, char **argv)
 	}
 	pthread_create(&table.supervisor, NULL, &supervisor, &table);
 	i = -1;
+	// while (1)
+	// {
+	// 	pthread_mutex_lock(&table.phl_end_mutex);
+	// 	if (table.phl_end == table.philo_nb)
+	// 	{
+	// 		pthread_mutex_unlock(&table.phl_end_mutex);
+	// 		break ;
+	// 	}
+	// 	pthread_mutex_unlock(&table.phl_end_mutex);
+	// }
 	while (++i < table.philo_nb)
 		pthread_join(table.phl_link[i].philo_life, NULL);
 	pthread_join(table.supervisor, NULL);

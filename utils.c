@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 16:57:33 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/22 21:50:19 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/23 14:09:05 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,15 +62,18 @@ void	my_usleep(long int time_in_ms)
 
 void	free_for_all(t_table *table)
 {
-	while (table->philo_nb > 0)
+	int i;
+
+	i = -1;
+	while (++i < table->philo_nb)
 	{
-		pthread_mutex_destroy(&table->forks_tab[table->philo_nb]);
-		pthread_mutex_destroy(&table->phl_link[table->philo_nb].meal_mutex);
-		pthread_mutex_destroy(&table->phl_link[table->philo_nb]
+		pthread_mutex_destroy(&table->forks_tab[i]);
+		pthread_mutex_destroy(&table->phl_link[i].meal_mutex);
+		pthread_mutex_destroy(&table->phl_link[i]
 			.death_time_mutex);
-		table->philo_nb--;
 	}
 	pthread_mutex_destroy(&table->death_mutex);
+	pthread_mutex_destroy(&table->phl_end_mutex);
 	free(table->phl_link);
 	free(table->forks_tab);
 }

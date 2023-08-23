@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 19:32:04 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/22 22:06:12 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/23 14:11:28 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,11 @@ void	*routine(void *arg)
 	philo = (t_phl *)arg;
 	if (philo->philo_id % 2 == 0)
 		my_usleep(2);
-	while (1)
-	{
-		pthread_mutex_lock(&philo->table_link->death_mutex);
-		if (philo->table_link->death == 1
-			|| philo->table_link->meal_nbr_reached == 1)
-		{
-			pthread_mutex_unlock(&philo->table_link->death_mutex);
-			break ;
-		}
-		pthread_mutex_unlock(&philo->table_link->death_mutex);
+	while (stop(philo->table_link) == 0)
 		print_routine(philo);
-	}
+	// pthread_mutex_lock(&philo->table_link->phl_end_mutex);
+	// philo->table_link->phl_end++;
+	// pthread_mutex_unlock(&philo->table_link->phl_end_mutex);
 	return (NULL);
 }
 
