@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 19:32:04 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/23 14:11:28 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/25 21:55:17 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void	*routine(void *arg)
 
 	philo = (t_phl *)arg;
 	if (philo->philo_id % 2 == 0)
-		my_usleep(2);
+		my_usleep(2, philo->table_link);
 	while (stop(philo->table_link) == 0)
-		print_routine(philo);
+			print_routine(philo);
 	return (NULL);
 }
 
@@ -37,7 +37,7 @@ void	print_routine(t_phl *philo)
 	pthread_mutex_lock(&philo->death_time_mutex);
 	philo->death_time = get_time() + philo->table_link->time_to_die;
 	pthread_mutex_unlock(&philo->death_time_mutex);
-	my_usleep(philo->table_link->time_to_eat);
+	my_usleep(philo->table_link->time_to_eat, philo->table_link);
 	pthread_mutex_lock(&philo->meal_mutex);
 	philo->meal_nbr++;
 	pthread_mutex_unlock(&philo->meal_mutex);
@@ -47,7 +47,7 @@ void	print_routine(t_phl *philo)
 		pthread_mutex_unlock(&philo->table_link->forks_tab[philo->philo_id]);
 	pthread_mutex_unlock(&philo->table_link->forks_tab[philo->philo_id - 1]);
 	print(philo, "is sleeping");
-	my_usleep(philo->table_link->time_to_sleep);
+	my_usleep(philo->table_link->time_to_sleep, philo->table_link);
 	print(philo, "is thinking");
 }
 

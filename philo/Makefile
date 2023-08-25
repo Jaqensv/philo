@@ -13,6 +13,8 @@ CC = gcc $(CFLAGS)
 
 CFLAGS = -Wall -Werror -Wextra
 
+all: $(NAME)
+
 $(NAME): $(OBJECTS)
 
 bonus: $(BONUS)

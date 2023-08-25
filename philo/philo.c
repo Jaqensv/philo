@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 11:53:00 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/23 14:09:28 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/25 21:52:07 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	param_checker(int argc, char **argv)
 				|| argv[j][i] == '.' || ft_atoi(&argv[2][0]) == 0
 				|| ft_atoi(&argv[j][i]) > 2147483647
 				|| ft_atoi(&argv[1][0]) <= 0)
-					return (print_error("wrong param"), 1);
+				return (print_error("wrong param"), 1);
 			i++;
 		}
 		j++;
@@ -100,6 +100,11 @@ int	main(int argc, char **argv)
 		table.phl_link[i].philo_id = i + 1;
 		table.phl_link[i].table_link = &table;
 		table.phl_link[i].death_time = get_time() + table.time_to_die;
+		if (table.philo_nb == 1)
+		{
+			one_philo(&table);
+			return (0);
+		}
 		pthread_create(&table.phl_link[i].philo_life,
 			NULL, &routine, &table.phl_link[i]);
 	}
@@ -112,4 +117,4 @@ int	main(int argc, char **argv)
 	return (0);
 }
 
-verifier make re et fichier philo qui ne s'efface pas avec un clean
+// verifier make re et fichier philo qui ne s'efface pas avec un clean

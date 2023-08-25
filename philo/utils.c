@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 16:57:33 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/23 14:09:05 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/25 20:39:14 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ long int	get_time(void)
 	struct timeval	actual_time;
 
 	if (gettimeofday(&actual_time, NULL) == -1)
-		printf("Gettimeofday returned -1\n");
+		printf("gettimeofday failed\n");
 	return (actual_time.tv_sec * 1000 + actual_time.tv_usec / 1000);
 }
 
@@ -51,18 +51,22 @@ long int	exe_time(t_table *table)
 	return (exe_time);
 }
 
-void	my_usleep(long int time_in_ms)
+void	my_usleep(long int time_in_ms, t_table *table)
 {
 	long int	start_time;
 
 	start_time = get_time();
 	while ((get_time() - start_time) < time_in_ms)
+	{
+		if (stop(table) == 1)
+			break ;
 		usleep(100);
+	}
 }
 
 void	free_for_all(t_table *table)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < table->philo_nb)
