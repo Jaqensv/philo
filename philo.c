@@ -15,16 +15,16 @@
 void	parser(char **argv, t_table *table)
 {
 	table->philo_nb = ft_atoi(argv[1]);
-	if (table->philo_nb < 1)
-		print_error("We need at least one philosopher");
 	table->time_to_die = ft_atoi(argv[2]);
 	table->time_to_eat = ft_atoi(argv[3]);
 	table->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
 		table->times_philo_must_eat = ft_atoi(argv[5]);
+	else if (!argv[5])
+		table->times_philo_must_eat = 0;
 }
 
-void	param_checker(int argc, char **argv)
+int	param_checker(int argc, char **argv)
 {
 	int	i;
 	int	j;
@@ -32,23 +32,24 @@ void	param_checker(int argc, char **argv)
 	i = 0;
 	j = 1;
 	if (argc < 5 || argc > 6)
-		print_error("wrong_param_nb");
+		return (print_error("wrong_param_nb"), 1);
 	while (argv[j])
 	{
 		while (argv[j][i])
 		{
 			if ((argv[j][i] >= 'a' && argv[j][i] <= 'z')
-				|| (argv[j][i] >= 'A' && argv[j][i] <= 'Z'))
-				print_error("Wrong param (alpha)");
-			if (argv[j][i] == '-')
-				print_error("Wrong param (negative)");
-			if (argv[j][i] == ' ')
-				print_error("Wrong param (space)");
+				|| (argv[j][i] >= 'A' && argv[j][i] <= 'Z')
+				|| argv[j][i] == '-' || argv[j][i] == ' '
+				|| argv[j][i] == '.' || ft_atoi(&argv[2][0]) == 0
+				|| ft_atoi(&argv[j][i]) > 2147483647
+				|| ft_atoi(&argv[1][0]) <= 0)
+					return (print_error("wrong param"), 1);
 			i++;
 		}
 		j++;
 		i = 0;
 	}
+	return (0);
 }
 
 void	global_init(t_table *table)
@@ -87,7 +88,8 @@ int	main(int argc, char **argv)
 	int			i;
 
 	i = -1;
-	param_checker(argc, argv);
+	if (param_checker(argc, argv) == 1)
+		return (0);
 	parser(argv, &table);
 	table.phl_link = malloc(sizeof(t_phl) * table.philo_nb);
 	table.forks_tab = malloc(sizeof(pthread_mutex_t) * table.philo_nb);
