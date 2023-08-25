@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 19:32:04 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/25 21:55:17 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/25 22:18:32 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	*routine(void *arg)
 	if (philo->philo_id % 2 == 0)
 		my_usleep(2, philo->table_link);
 	while (stop(philo->table_link) == 0)
-			print_routine(philo);
+		print_routine(philo);
 	return (NULL);
 }
 
