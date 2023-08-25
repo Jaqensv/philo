@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 16:49:15 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/25 21:50:02 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/25 22:16:39 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void			*supervisor(void *arg);
 void			*routine(void *arg);
 void			free_for_all(t_table *table);
 void			one_philo(t_table *table);
+void			global_init(t_table *table);
 int				check_death(t_table *table);
 int				check_food(t_table *table);
 int				stop(t_table *table);

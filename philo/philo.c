@@ -6,7 +6,7 @@
 /*   By: mde-lang <mde-lang@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/11 11:53:00 by mde-lang          #+#    #+#             */
-/*   Updated: 2023/08/25 21:52:07 by mde-lang         ###   ########.fr       */
+/*   Updated: 2023/08/25 22:16:29 by mde-lang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	parser(char **argv, t_table *table)
 		table->times_philo_must_eat = 0;
 	table->phl_link = malloc(sizeof(t_phl) * table->philo_nb);
 	table->forks_tab = malloc(sizeof(pthread_mutex_t) * table->philo_nb);
+	global_init(table);
 }
 
 int	param_checker(int argc, char **argv)
@@ -93,7 +94,6 @@ int	main(int argc, char **argv)
 	if (param_checker(argc, argv) == 1)
 		return (0);
 	parser(argv, &table);
-	global_init(&table);
 	while (++i < table.philo_nb)
 	{
 		table.phl_link[i].meal_nbr = 0;
@@ -101,10 +101,7 @@ int	main(int argc, char **argv)
 		table.phl_link[i].table_link = &table;
 		table.phl_link[i].death_time = get_time() + table.time_to_die;
 		if (table.philo_nb == 1)
-		{
-			one_philo(&table);
-			return (0);
-		}
+			return (one_philo(&table), 0);
 		pthread_create(&table.phl_link[i].philo_life,
 			NULL, &routine, &table.phl_link[i]);
 	}
@@ -116,5 +113,3 @@ int	main(int argc, char **argv)
 	free_for_all(&table);
 	return (0);
 }
-
-// verifier make re et fichier philo qui ne s'efface pas avec un clean
