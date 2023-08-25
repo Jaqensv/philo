@@ -21,9 +21,6 @@ void	*routine(void *arg)
 		my_usleep(2);
 	while (stop(philo->table_link) == 0)
 		print_routine(philo);
-	// pthread_mutex_lock(&philo->table_link->phl_end_mutex);
-	// philo->table_link->phl_end++;
-	// pthread_mutex_unlock(&philo->table_link->phl_end_mutex);
 	return (NULL);
 }
 

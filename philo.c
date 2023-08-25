@@ -22,6 +22,8 @@ void	parser(char **argv, t_table *table)
 		table->times_philo_must_eat = ft_atoi(argv[5]);
 	else if (!argv[5])
 		table->times_philo_must_eat = 0;
+	table->phl_link = malloc(sizeof(t_phl) * table->philo_nb);
+	table->forks_tab = malloc(sizeof(pthread_mutex_t) * table->philo_nb);
 }
 
 int	param_checker(int argc, char **argv)
@@ -91,8 +93,6 @@ int	main(int argc, char **argv)
 	if (param_checker(argc, argv) == 1)
 		return (0);
 	parser(argv, &table);
-	table.phl_link = malloc(sizeof(t_phl) * table.philo_nb);
-	table.forks_tab = malloc(sizeof(pthread_mutex_t) * table.philo_nb);
 	global_init(&table);
 	while (++i < table.philo_nb)
 	{
@@ -105,19 +105,11 @@ int	main(int argc, char **argv)
 	}
 	pthread_create(&table.supervisor, NULL, &supervisor, &table);
 	i = -1;
-	// while (1)
-	// {
-	// 	pthread_mutex_lock(&table.phl_end_mutex);
-	// 	if (table.phl_end == table.philo_nb)
-	// 	{
-	// 		pthread_mutex_unlock(&table.phl_end_mutex);
-	// 		break ;
-	// 	}
-	// 	pthread_mutex_unlock(&table.phl_end_mutex);
-	// }
 	while (++i < table.philo_nb)
 		pthread_join(table.phl_link[i].philo_life, NULL);
 	pthread_join(table.supervisor, NULL);
 	free_for_all(&table);
 	return (0);
 }
+
+verifier make re et fichier philo qui ne s'efface pas avec un clean
